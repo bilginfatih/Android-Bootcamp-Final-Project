@@ -1,11 +1,8 @@
-package com.fatihbilgin.movieapp.ui.screen
+package com.fatihbilgin.movieapp.ui.screen.home
 
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
-import com.fatihbilgin.movieapp.ui.theme.DarkBlue
 import com.fatihbilgin.movieapp.ui.viewmodel.CardScreenViewModel
 import com.fatihbilgin.movieapp.ui.viewmodel.HomePageViewModel
 

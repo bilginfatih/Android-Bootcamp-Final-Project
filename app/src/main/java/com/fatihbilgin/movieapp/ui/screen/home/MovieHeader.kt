@@ -1,4 +1,4 @@
-package com.fatihbilgin.movieapp.ui.components
+package com.fatihbilgin.movieapp.ui.screen.home
 
 import android.graphics.PorterDuff
 import android.widget.RatingBar
@@ -22,6 +22,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -39,35 +41,91 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.yield
 import kotlin.math.absoluteValue
 
+// Header section with auto-sliding carousel
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AutoSliding(pagerState: PagerState, filmsList: List<FilmsData>, navController: NavController) {
+fun MovieHeaderSection(
+    pagerState: PagerState,
+    filmsList: List<FilmsData>,
+    navController: NavController
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(350.dp)
+    ) {
+        // Background image with blur effect
+        HeaderBackgroundImage(
+            currentPage = pagerState.currentPage,
+            filmsList = filmsList
+        )
+        // Auto-sliding carousel for movies
+        AutoSliding(
+            pagerState = pagerState,
+            filmsList = filmsList,
+            navController = navController
+        )
+    }
+}
 
+// Background image for the movie header
+@Composable
+fun HeaderBackgroundImage(currentPage: Int, filmsList: List<FilmsData>) {
+    if (currentPage in filmsList.indices) {
+        val imageUrl = filmsList[currentPage].imageUrl()
+        GlideImage(
+            imageModel = imageUrl,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(350.dp)
+                .graphicsLayer {
+                    alpha = 1f
+                }
+                .blur(20.dp)
+                .clip(RoundedCornerShape(bottomStart = 64.dp, bottomEnd = 64.dp))
+        )
+    }
+}
+
+// Auto sliding pager for featured movies
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun AutoSliding(
+    pagerState: PagerState,
+    filmsList: List<FilmsData>,
+    navController: NavController
+) {
     LaunchedEffect(Unit) {
         while (true) {
             yield()
-            delay(2000)
+            delay(timeMillis = 2000)
             pagerState.animateScrollToPage(
-                page = (pagerState.currentPage + 1) % (pagerState.pageCount),
-                animationSpec = tween(600)
+                page = (pagerState.currentPage + 1) % pagerState.pageCount,
+                animationSpec = tween(durationMillis = 600)
             )
         }
     }
-
     HorizontalPager(
         state = pagerState,
         modifier = Modifier
             .fillMaxWidth()
             .height(300.dp)
-            .padding(0.dp, 15.dp, 0.dp, 0.dp)
+            .padding(top = 15.dp)
     ) { page ->
-        MovieCard(film = filmsList[page], pagerState = pagerState, page = page, navController = navController)
+        AutoSlidingCard(
+            film = filmsList[page],
+            pagerState = pagerState,
+            page = page,
+            navController = navController,
+        )
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MovieCard(film: FilmsData, pagerState: PagerState, page: Int, navController: NavController) {
+fun AutoSlidingCard(film: FilmsData, pagerState: PagerState, page: Int, navController: NavController) {
     val imageUrl = film.imageUrl()
     Card(
         modifier = Modifier

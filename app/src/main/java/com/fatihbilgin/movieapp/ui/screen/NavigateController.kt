@@ -7,9 +7,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.fatihbilgin.movieapp.R
-import com.fatihbilgin.movieapp.data.entity.CampaignData
 import com.fatihbilgin.movieapp.data.entity.FilmsData
+import com.fatihbilgin.movieapp.ui.screen.home.HomePage
 import com.fatihbilgin.movieapp.ui.viewmodel.CardScreenViewModel
 import com.fatihbilgin.movieapp.ui.viewmodel.FilmDetailViewModel
 import com.fatihbilgin.movieapp.ui.viewmodel.HomePageViewModel
