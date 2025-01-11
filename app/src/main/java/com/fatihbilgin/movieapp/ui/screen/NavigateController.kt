@@ -8,7 +8,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.fatihbilgin.movieapp.data.entity.FilmsData
+import com.fatihbilgin.movieapp.ui.screen.filmdetail.FilmDetailScreen
 import com.fatihbilgin.movieapp.ui.screen.home.HomePage
+import com.fatihbilgin.movieapp.ui.viewmodel.CampaignViewModel
 import com.fatihbilgin.movieapp.ui.viewmodel.CardScreenViewModel
 import com.fatihbilgin.movieapp.ui.viewmodel.FilmDetailViewModel
 import com.fatihbilgin.movieapp.ui.viewmodel.HomePageViewModel
@@ -17,7 +19,9 @@ import com.google.gson.Gson
 @Composable
 fun NavigateController(homePageViewModel : HomePageViewModel,
                        filmDetailViewModel: FilmDetailViewModel,
-                       cardScreenViewModel: CardScreenViewModel) {
+                       cardScreenViewModel: CardScreenViewModel,
+                       campaignViewModel: CampaignViewModel
+) {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "homePage") {
@@ -64,7 +68,7 @@ fun NavigateController(homePageViewModel : HomePageViewModel,
             arguments = listOf(navArgument("campaignId") { type = NavType.IntType; defaultValue = -1 })
         ) { backStackEntry ->
             val campaignId = backStackEntry.arguments?.getInt("campaignId")
-            CampaignScreen(navController = navController, initialCampaignId = campaignId)
+            CampaignScreen(navController = navController, initialCampaignId = campaignId, campaignViewModel = campaignViewModel)
         }
 
     }

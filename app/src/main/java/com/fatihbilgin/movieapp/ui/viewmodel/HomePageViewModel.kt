@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomePageViewModel @Inject constructor(var filmsRepository: FilmsRepository) : ViewModel() {
+class HomePageViewModel @Inject constructor(private var filmsRepository: FilmsRepository) : ViewModel() {
     // Ana film listesi
     var allFilmsList = MutableLiveData<List<FilmsData>>()
 
@@ -22,20 +22,23 @@ class HomePageViewModel @Inject constructor(var filmsRepository: FilmsRepository
     var sciFiFilmsList = MutableLiveData<List<FilmsData>>()
     var fantasticFilmsList = MutableLiveData<List<FilmsData>>()
 
-    // Custom film listesi (belirtilen indeksler)
+    // Auto Slide filmler listesi
     var customFilmsList = MutableLiveData<List<FilmsData>>()
 
-
-    // Başlangıçta çağrılacak ve film verisini çekecek fonksiyon
     init {
+        // Uygulama başlarken filmleri çek
         filmsGet()
     }
 
-    // Filmleri çekip kategorilere göre filtrele ve custom list'yi oluştur
+    /**
+     * Filmleri API'den çeker ve kategorilere göre filtreler.
+     */
     private fun filmsGet() {
         CoroutineScope(Dispatchers.Main).launch {
             try {
+                // API'den tüm filmleri çek
                 val films = filmsRepository.filmsGet()
+
                 allFilmsList.value = films
 
                 // Kategorilere göre filtrele
@@ -44,19 +47,20 @@ class HomePageViewModel @Inject constructor(var filmsRepository: FilmsRepository
                 sciFiFilmsList.value = films.filter { it.category == "Science Fiction" }
                 fantasticFilmsList.value = films.filter { it.category == "Fantastic" }
 
-                // Custom list oluştur
-                customFilmsList.value = listOf(
-                    films.getOrNull(0), // 0. indeks
-                    films.getOrNull(1), // 1. indeks
-                    films.getOrNull(8), // 8. indeks
-                    films.getOrNull(12), // 12. indeks
-                    films.getOrNull(14)  // 14. indeks
-                ).filterNotNull() // Null olmayan elemanları al
+                // Auto Slide list oluştur
+                customFilmsList.value = listOfNotNull(
+                    films.getOrNull(0),
+                    films.getOrNull(1),
+                    films.getOrNull(8),
+                    films.getOrNull(12),
+                    films.getOrNull(14),
+                )
 
-                // Listeyi logla
-                Log.d("LogFatih2: FilmsList", "Fetched films: ${films}")
+                // Başarıyla çekilen filmleri logla
+                Log.d("HomePageViewModel", "Fetched films: $films")
             } catch (e: Exception) {
-                Log.e("LogFatih: FilmsList", "Error fetching films: ${e.message}")
+                // Hata durumunu logla
+                Log.e("HomePageViewModel", "Error fetching films: ${e.message}", e)
             }
         }
     }

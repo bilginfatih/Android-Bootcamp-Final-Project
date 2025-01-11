@@ -6,13 +6,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.fatihbilgin.movieapp.ui.screen.HomePage
 import com.fatihbilgin.movieapp.ui.screen.NavigateController
 import com.fatihbilgin.movieapp.ui.screen.OnboardingScreen
 
 
 import com.fatihbilgin.movieapp.ui.theme.MovieAppTheme
+import com.fatihbilgin.movieapp.ui.viewmodel.CampaignViewModel
 import com.fatihbilgin.movieapp.ui.viewmodel.CardScreenViewModel
 import com.fatihbilgin.movieapp.ui.viewmodel.FilmDetailViewModel
 import com.fatihbilgin.movieapp.ui.viewmodel.HomePageViewModel
@@ -23,6 +22,7 @@ class MainActivity : ComponentActivity() {
     val homePageViewModel : HomePageViewModel by viewModels()
     val filmDetailViewModel : FilmDetailViewModel by viewModels()
     val cardScreenViewModel : CardScreenViewModel by viewModels()
+    val campaignViewModel : CampaignViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.decorView.systemUiVisibility = (
@@ -42,7 +42,8 @@ class MainActivity : ComponentActivity() {
                     NavigateController(
                         homePageViewModel = homePageViewModel,
                         filmDetailViewModel = filmDetailViewModel,
-                        cardScreenViewModel = cardScreenViewModel
+                        cardScreenViewModel = cardScreenViewModel,
+                        campaignViewModel = campaignViewModel
                     )
                 } else {
                     // Onboarding ekranı göster

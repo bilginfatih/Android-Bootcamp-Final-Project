@@ -21,21 +21,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,22 +36,20 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fatihbilgin.movieapp.R
 import com.fatihbilgin.movieapp.data.entity.CampaignData
+import com.fatihbilgin.movieapp.ui.components.CommonTopAppBar
 import com.fatihbilgin.movieapp.ui.theme.BackGroundColor
 import com.fatihbilgin.movieapp.ui.theme.DarkBlue
 import com.fatihbilgin.movieapp.ui.theme.Red
 import com.fatihbilgin.movieapp.ui.viewmodel.CampaignViewModel
-import com.skydoves.landscapist.glide.GlideImage
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CampaignScreen(
     navController: NavController,
     initialCampaignId: Int?,
-    campaignViewModel: CampaignViewModel = hiltViewModel()
+    campaignViewModel: CampaignViewModel
 ) {
 
     LaunchedEffect(initialCampaignId) {
@@ -96,18 +86,9 @@ fun CampaignScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(text = "Kampanyalar", color = Color.White, fontWeight = FontWeight.Bold) },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.back),
-                            contentDescription = "Back",
-                            tint = Color.White
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = DarkBlue),
+            CommonTopAppBar(
+                title = "Kampanyalar",
+                navController = navController
             )
         }
     ) { paddingValues ->
@@ -211,5 +192,3 @@ fun CampaignCard(
         }
     }
 }
-
-
