@@ -58,31 +58,41 @@ import com.skydoves.landscapist.glide.GlideImage
 fun SearchScreen(navController: NavController, films: List<FilmsData>) {
     var searchQuery by remember { mutableStateOf("") }
     val filteredFilms = films.filter { film ->
+        // Arama sorgusuna göre film ismini veya kategorisini filtreleme
         film.name.contains(searchQuery, ignoreCase = true) ||
                 film.category.contains(searchQuery, ignoreCase = true)
     }
 
-    Scaffold() { paddingValues ->
+    Scaffold { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .background(BackGroundColor)
+                .background(BackGroundColor) // Arka plan rengi
         ) {
             TextField(
                 value = searchQuery,
-                onValueChange = { searchQuery = it },
+                onValueChange = { searchQuery = it }, // Kullanıcının arama sorgusunu güncelleme
                 label = { Text("Search Movies", color = Color.White) },
                 trailingIcon = {
-                    Icon(painter = painterResource(id = R.drawable.back),
-                    contentDescription = "Clear", tint = Color.White,
-                    modifier = Modifier.clickable { navController.popBackStack() })
-                               },
-                leadingIcon = { Icon(painter = painterResource(id = R.drawable.searchmid), contentDescription = "Search", tint = Color.White) },
+                    Icon(
+                        painter = painterResource(id = R.drawable.back),
+                        contentDescription = "Clear",
+                        tint = Color.White,
+                        modifier = Modifier.clickable { navController.popBackStack() } // Geri butonu
+                    )
+                },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.searchmid),
+                        contentDescription = "Search",
+                        tint = Color.White
+                    )
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 12.dp, start = 12.dp, end = 12.dp, bottom = 12.dp)
-                    .clip(RoundedCornerShape(16.dp)),
+                    .clip(RoundedCornerShape(16.dp)), // Köşeleri yuvarlama
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = DarkBlue,
                     focusedContainerColor = DarkBlue,
@@ -93,21 +103,19 @@ fun SearchScreen(navController: NavController, films: List<FilmsData>) {
                     unfocusedTextColor = Color.White,
                     cursorColor = Color.White
                 ),
-
             )
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(1.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp) // Elemanlar arasındaki boşluk
             ) {
                 items(filteredFilms) { film ->
-                    FilmCardWithDetails(film = film, navController = navController)
+                    FilmCardWithDetails(film = film, navController = navController) // Film kartını listeleme
                 }
             }
         }
     }
 }
-
 
 @Composable
 fun FilmCardWithDetails(film: FilmsData, navController: NavController) {
@@ -117,11 +125,12 @@ fun FilmCardWithDetails(film: FilmsData, navController: NavController) {
             .height(225.dp)
             .background(BackGroundColor)
             .clickable {
+                // Film detay sayfasına yönlendirme
                 val filmJson = Gson().toJson(film)
                 navController.navigate("filmDetail/$filmJson")
             },
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        shape = RoundedCornerShape(12.dp), // Kartın köşelerini yuvarlama
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp) // Kart gölgesi
     ) {
         Row(
             modifier = Modifier
@@ -130,29 +139,29 @@ fun FilmCardWithDetails(film: FilmsData, navController: NavController) {
             BoxWithConstraints(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(DarkBlue)
+                    .background(DarkBlue) // Kartın arka plan rengi
             ) {
-                val imageWidth = maxWidth * 0.4f // Card genişliğinin %40'ı
+                val imageWidth = maxWidth * 0.4f // Görsel genişliği
                 Row(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    // Görsel (%40'lık alan)
+                    // Film görseli
                     GlideImage(
                         imageModel = film.imageUrl(),
                         contentDescription = film.name,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
-                            .width(imageWidth) // Genişlik, card genişliğinin %40'ı
-                            .fillMaxHeight()   // Card'ın tüm yüksekliği
-                            .clip(RoundedCornerShape(8.dp))
+                            .width(imageWidth) // Genişlik, kart genişliğinin %40'ı
+                            .fillMaxHeight()   // Kartın tüm yüksekliği
+                            .clip(RoundedCornerShape(8.dp)) // Köşeleri yuvarlama
                     )
 
-                    // Geri kalan %60'lık alan
+                    // Film detayları
                     Column(modifier = Modifier.fillMaxSize().background(DarkBlue)) {
                         Box(
                             modifier = Modifier
                                 .fillMaxHeight()
-                                .fillMaxWidth() // Geriye kalan genişliği kaplar
+                                .fillMaxWidth()
                                 .padding(start = 24.dp, end = 24.dp, bottom = 34.dp, top = 12.dp)
                         ) {
                             Text(
@@ -160,7 +169,7 @@ fun FilmCardWithDetails(film: FilmsData, navController: NavController) {
                                 style = MaterialTheme.typography.headlineSmall,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White,
-                                modifier = Modifier.align(Alignment.TopCenter) // Geri kalan alanın üst merkezine hizalanır
+                                modifier = Modifier.align(Alignment.TopCenter) // Üst merkeze hizalanır
                             )
                             Row(modifier = Modifier.fillMaxSize()) {
                                 Box(modifier = Modifier.fillMaxSize().padding(bottom = 24.dp)) {
@@ -174,6 +183,7 @@ fun FilmCardWithDetails(film: FilmsData, navController: NavController) {
                                             PorterDuff.Mode.SRC_ATOP
                                         )
                                     }
+                                    // Rating butonu
                                     TextButton(
                                         onClick = {},
                                         modifier = Modifier
@@ -192,6 +202,7 @@ fun FilmCardWithDetails(film: FilmsData, navController: NavController) {
                                             fontWeight = FontWeight.Bold
                                         )
                                     }
+                                    // Yıl bilgisi butonu
                                     TextButton(
                                         onClick = {},
                                         modifier = Modifier
@@ -208,6 +219,7 @@ fun FilmCardWithDetails(film: FilmsData, navController: NavController) {
                                     }
                                 }
                             }
+                            // Film açıklaması
                             Text(
                                 text = film.description,
                                 style = MaterialTheme.typography.bodySmall,
@@ -219,21 +231,8 @@ fun FilmCardWithDetails(film: FilmsData, navController: NavController) {
                     }
                 }
             }
-            // Film details
-            Column(
-                modifier = Modifier.fillMaxHeight().background(DarkBlue),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-
-                Text(
-                    text = film.description,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
         }
     }
 }
+
 

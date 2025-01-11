@@ -13,7 +13,4 @@ data class FilmsData(
     var description: String,
 )
 
-/**
- * create Films List
- * */
 

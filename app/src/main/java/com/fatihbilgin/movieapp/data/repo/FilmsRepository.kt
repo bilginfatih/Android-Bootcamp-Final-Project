@@ -7,23 +7,30 @@ import com.fatihbilgin.movieapp.data.entity.MovieCartData
 
 class FilmsRepository(var filmsDataSource: FilmsDataSource) {
 
+    // Filmleri veritabanından getirir
     suspend fun filmsGet(): List<FilmsData> {
-        val films = filmsDataSource.filmsGet()
-        Log.d("LogFatih: FilmsRepository", "Fetched films from data source: $films")
-        return films
+        val films = filmsDataSource.filmsGet() // Veritabanından filmleri al
+        Log.d("LogFatih: FilmsRepository", "Fetched films from data source: $films") // Loglama yap
+        return films // Filmleri döndür
     }
-    suspend fun addMovie(name: String,
-                       image: String,
-                       price: Int,
-                       category: String,
-                       rating: Double,
-                       year: Int,
-                       director: String,
-                       description: String,
-                       orderAmount: Int,
-                       userName: String) = filmsDataSource.addMovie(name, image, price, category, rating, year, director, description, orderAmount, userName)
 
-    suspend fun movieCartGet(userName: String) : List<MovieCartData> = filmsDataSource.movieCartGet(userName)
+    // Yeni bir film ekler
+    suspend fun addMovie(
+        name: String,
+        image: String,
+        price: Int,
+        category: String,
+        rating: Double,
+        year: Int,
+        director: String,
+        description: String,
+        orderAmount: Int,
+        userName: String
+    ) = filmsDataSource.addMovie(name, image, price, category, rating, year, director, description, orderAmount, userName)
 
+    // Kullanıcıya ait film sepetini getirir
+    suspend fun movieCartGet(userName: String): List<MovieCartData> = filmsDataSource.movieCartGet(userName)
+
+    // Sepetten bir filmi siler
     suspend fun deleteMovie(cartId: Int, userName: String) = filmsDataSource.deleteMovie(cartId, userName)
 }

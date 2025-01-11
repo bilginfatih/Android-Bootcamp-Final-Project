@@ -3,7 +3,7 @@ package com.fatihbilgin.movieapp.data.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "order")
+@Entity(tableName = "order") // Veritabanında "order" adında bir tablo oluşturur
 data class OrderData(
     @PrimaryKey(autoGenerate = true) val orderId: Int = 0,
     val userName: String,

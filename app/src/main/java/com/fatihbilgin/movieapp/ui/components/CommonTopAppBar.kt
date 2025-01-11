@@ -22,27 +22,29 @@ import com.fatihbilgin.movieapp.ui.theme.BackGroundColor
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommonTopAppBar(
-    title: String,
-    navController: NavController,
-    onBackClick: () -> Unit = { navController.popBackStack() },
-    actions: @Composable (RowScope.() -> Unit)? = null,
-    backgroundColor: Color = BackGroundColor,
-    isTitleCentered: Boolean = true
+    title: String, // Üst çubuk başlığı
+    navController: NavController, // Navigasyon işlemleri için NavController
+    onBackClick: () -> Unit = { navController.popBackStack() }, // Geri tuşuna basıldığında çalışacak varsayılan işlem
+    actions: @Composable (RowScope.() -> Unit)? = null, // Üst çubuğa eklenebilecek opsiyonel aksiyonlar (butonlar vb.)
+    backgroundColor: Color = BackGroundColor, // Üst çubuğun arka plan rengi
+    isTitleCentered: Boolean = true // Başlık ortalanacak mı?
 ) {
     TopAppBar(
         title = {
+            // Başlık ortalanmış mı kontrol edilir
             if (isTitleCentered) {
                 Box(
                     modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.Center // Başlık ortalanır
                 ) {
                     Text(
-                        text = title,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
+                        text = title, // Başlık metni
+                        color = Color.White, // Metin rengi
+                        fontWeight = FontWeight.Bold // Metin kalınlığı
                     )
                 }
             } else {
+                // Başlık sola hizalanır
                 Text(
                     text = title,
                     color = Color.White,
@@ -51,17 +53,19 @@ fun CommonTopAppBar(
             }
         },
         navigationIcon = {
-            IconButton(onClick = onBackClick) {
+            // Geri butonu
+            IconButton(onClick = onBackClick) { // Geri butonuna tıklandığında çalışacak işlem
                 Icon(
-                    painter = painterResource(id = R.drawable.back),
-                    contentDescription = "Back",
-                    tint = Color.White
+                    painter = painterResource(id = R.drawable.back), // Geri simgesi
+                    contentDescription = "Back", // Erişilebilirlik açıklaması
+                    tint = Color.White // Simgenin rengi
                 )
             }
         },
         actions = {
+            // Üst çubuğa eklenebilecek aksiyonlar (örneğin, ikonlar veya butonlar)
             actions?.invoke(this)
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = backgroundColor)
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = backgroundColor) // Üst çubuğun arka plan rengi
     )
 }
