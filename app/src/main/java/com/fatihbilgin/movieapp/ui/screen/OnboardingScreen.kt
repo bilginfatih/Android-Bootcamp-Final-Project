@@ -89,7 +89,7 @@ fun OnboardingScreen(
                 shape = RoundedCornerShape(18.dp)
             ) {
                 Text(
-                    text = "Get Started",
+                    text = "Başlayın",
                     style = MaterialTheme.typography.bodyLarge.copy(
                         fontWeight = FontWeight.Bold
                     )

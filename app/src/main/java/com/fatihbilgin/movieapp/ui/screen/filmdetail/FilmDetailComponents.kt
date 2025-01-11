@@ -147,7 +147,7 @@ fun AddToCartButton(
             .background(Red, shape = RoundedCornerShape(24.dp))
     ) {
         Text(
-            text = "Add to Cart",
+            text = "Sepete Ekel",
             style = MaterialTheme.typography.bodyMedium,
             color = Color.White,
             fontWeight = FontWeight.Bold

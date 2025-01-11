@@ -73,7 +73,7 @@ fun SearchScreen(navController: NavController, films: List<FilmsData>) {
             TextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it }, // Kullanıcının arama sorgusunu güncelleme
-                label = { Text("Search Movies", color = Color.White) },
+                label = { Text("Filmleri Ara", color = Color.White) },
                 trailingIcon = {
                     Icon(
                         painter = painterResource(id = R.drawable.back),
