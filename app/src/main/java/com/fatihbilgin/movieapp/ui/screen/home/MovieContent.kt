@@ -1,5 +1,6 @@
 package com.fatihbilgin.movieapp.ui.screen.home
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,11 +34,12 @@ import com.fatihbilgin.movieapp.data.entity.FilmsData
 import com.fatihbilgin.movieapp.extensions.imageUrl
 import com.fatihbilgin.movieapp.ui.components.BottomActionBar
 import com.fatihbilgin.movieapp.ui.theme.BackGroundColor
-import com.fatihbilgin.movieapp.ui.viewmodel.CardScreenViewModel
+import com.fatihbilgin.movieapp.ui.viewmodel.CartScreenViewModel
 import com.fatihbilgin.movieapp.ui.viewmodel.HomePageViewModel
 import com.google.gson.Gson
 import com.skydoves.landscapist.glide.GlideImage
 
+@SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MovieContent(
@@ -45,7 +47,7 @@ fun MovieContent(
     homePageViewModel: HomePageViewModel,
     navController: NavController,
     cartCount: Int,
-    cardScreenViewModel: CardScreenViewModel
+    cartScreenViewModel: CartScreenViewModel
 ) {
 
     val filmsList = homePageViewModel.customFilmsList.observeAsState(listOf())
@@ -80,7 +82,7 @@ fun MovieContent(
                 CategorySection("Fantastic", fantasticFilms.value,navController)
             }
         }
-        BottomActionBar(cartItemCount = cartCount, navController = navController, cardScreenViewModel = cardScreenViewModel)
+        BottomActionBar(cartItemCount = cartCount, navController = navController, cartScreenViewModel = cartScreenViewModel)
 }
 
 @Composable

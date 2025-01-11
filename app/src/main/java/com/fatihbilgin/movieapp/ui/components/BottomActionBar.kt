@@ -18,8 +18,6 @@ import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,11 +27,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.fatihbilgin.movieapp.R
 import com.fatihbilgin.movieapp.ui.theme.DarkBlue
-import com.fatihbilgin.movieapp.ui.viewmodel.CardScreenViewModel
+import com.fatihbilgin.movieapp.ui.viewmodel.CartScreenViewModel
 
 @Composable
-fun BottomActionBar(cartItemCount: Int, navController: NavController, cardScreenViewModel: CardScreenViewModel) {
-    val totalOrderAmount = cardScreenViewModel.totalOrderAmount.observeAsState(0)
+fun BottomActionBar(cartItemCount: Int, navController: NavController, cartScreenViewModel: CartScreenViewModel) {
+    val totalOrderAmount = cartScreenViewModel.totalOrderAmount.observeAsState(0)
     val _totalOrderAmount = totalOrderAmount.value
     val totalOrder = _totalOrderAmount + cartItemCount
 

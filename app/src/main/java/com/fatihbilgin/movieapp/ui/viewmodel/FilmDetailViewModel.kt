@@ -36,7 +36,7 @@ class FilmDetailViewModel @Inject constructor(private val filmsRepository: Films
                userName: String) {
         CoroutineScope(Dispatchers.Main).launch {
         try {
-            filmsRepository.insert(
+            filmsRepository.addMovie(
                 name = name,
                 image = image,
                 price = price,

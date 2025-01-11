@@ -14,12 +14,12 @@ class FilmsDataSource(var filmsDao: FilmsDao) {
             val response = filmsDao.getFilms()
             response.movies
         } catch (e: Exception) {
-            Log.e("LogFatih: FilmsDataSource", "Error fetching films: ${e.message}")
+            Log.e("FilmsDataSource", "Error fetching films: ${e.message}")
             emptyList()
         }
     }
 
-    suspend fun insert(name: String,
+    suspend fun addMovie(name: String,
                        image: String,
                        price: Int,
                        category: String,
@@ -29,7 +29,6 @@ class FilmsDataSource(var filmsDao: FilmsDao) {
                        description: String,
                        orderAmount: Int,
                        userName: String) {
-        Log.e("Sepete Ekle", "$name - $image - $userName - $orderAmount" )
         filmsDao.insert(name, image, price, category, rating, year, director, description, orderAmount, userName)
     }
 

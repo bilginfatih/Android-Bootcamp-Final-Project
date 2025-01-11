@@ -1,9 +1,14 @@
 package com.fatihbilgin.movieapp.di
 
+import android.app.Application
+import android.content.Context
+import androidx.room.Room
 import com.fatihbilgin.movieapp.data.datasource.FilmsDataSource
 import com.fatihbilgin.movieapp.data.repo.FilmsRepository
 import com.fatihbilgin.movieapp.retrofit.ApiUtils
 import com.fatihbilgin.movieapp.retrofit.FilmsDao
+import com.fatihbilgin.movieapp.room.OrderDao
+import com.fatihbilgin.movieapp.room.OrderDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,4 +35,25 @@ class AppModule {
     fun provideFilmsDao() : FilmsDao {
         return ApiUtils.getFilmsDao()
     }
+
+
+    @Provides
+    fun provideContext(application: Application): Context {
+        return application.applicationContext
+    }
+
+    @Provides
+    fun provideDatabase(context: Context): OrderDatabase {
+        return Room.databaseBuilder(
+            context,
+            OrderDatabase::class.java,
+            "order_database"
+        ).build()
+    }
+
+    @Provides
+    fun provideOrderDao(database: OrderDatabase): OrderDao {
+        return database.orderDao()
+    }
+
 }

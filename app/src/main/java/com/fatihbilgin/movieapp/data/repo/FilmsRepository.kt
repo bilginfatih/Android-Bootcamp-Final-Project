@@ -12,7 +12,7 @@ class FilmsRepository(var filmsDataSource: FilmsDataSource) {
         Log.d("LogFatih: FilmsRepository", "Fetched films from data source: $films")
         return films
     }
-    suspend fun insert(name: String,
+    suspend fun addMovie(name: String,
                        image: String,
                        price: Int,
                        category: String,
@@ -21,7 +21,7 @@ class FilmsRepository(var filmsDataSource: FilmsDataSource) {
                        director: String,
                        description: String,
                        orderAmount: Int,
-                       userName: String) = filmsDataSource.insert(name, image, price, category, rating, year, director, description, orderAmount, userName)
+                       userName: String) = filmsDataSource.addMovie(name, image, price, category, rating, year, director, description, orderAmount, userName)
 
     suspend fun movieCartGet(userName: String) : List<MovieCartData> = filmsDataSource.movieCartGet(userName)
 

@@ -12,17 +12,19 @@ import com.fatihbilgin.movieapp.ui.screen.OnboardingScreen
 
 import com.fatihbilgin.movieapp.ui.theme.MovieAppTheme
 import com.fatihbilgin.movieapp.ui.viewmodel.CampaignViewModel
-import com.fatihbilgin.movieapp.ui.viewmodel.CardScreenViewModel
+import com.fatihbilgin.movieapp.ui.viewmodel.CartScreenViewModel
 import com.fatihbilgin.movieapp.ui.viewmodel.FilmDetailViewModel
 import com.fatihbilgin.movieapp.ui.viewmodel.HomePageViewModel
+import com.fatihbilgin.movieapp.ui.viewmodel.OrderViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     val homePageViewModel : HomePageViewModel by viewModels()
     val filmDetailViewModel : FilmDetailViewModel by viewModels()
-    val cardScreenViewModel : CardScreenViewModel by viewModels()
+    val cartScreenViewModel : CartScreenViewModel by viewModels()
     val campaignViewModel : CampaignViewModel by viewModels()
+    val orderViewModel : OrderViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.decorView.systemUiVisibility = (
@@ -42,8 +44,9 @@ class MainActivity : ComponentActivity() {
                     NavigateController(
                         homePageViewModel = homePageViewModel,
                         filmDetailViewModel = filmDetailViewModel,
-                        cardScreenViewModel = cardScreenViewModel,
-                        campaignViewModel = campaignViewModel
+                        cartScreenViewModel = cartScreenViewModel,
+                        campaignViewModel = campaignViewModel,
+                        orderViewModel = orderViewModel
                     )
                 } else {
                     // Onboarding ekranı göster

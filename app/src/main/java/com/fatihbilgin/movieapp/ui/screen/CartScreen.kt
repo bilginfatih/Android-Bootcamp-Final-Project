@@ -40,12 +40,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -67,27 +70,32 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.fatihbilgin.movieapp.R
 import com.fatihbilgin.movieapp.data.entity.MovieCartData
+import com.fatihbilgin.movieapp.data.entity.OrderData
 import com.fatihbilgin.movieapp.extensions.imageUrl
 import com.fatihbilgin.movieapp.ui.components.CommonTopAppBar
 import com.fatihbilgin.movieapp.ui.theme.BackGroundColor
 import com.fatihbilgin.movieapp.ui.theme.DarkBlue
 import com.fatihbilgin.movieapp.ui.theme.Red
-import com.fatihbilgin.movieapp.ui.viewmodel.CardScreenViewModel
+import com.fatihbilgin.movieapp.ui.viewmodel.CartScreenViewModel
 import com.fatihbilgin.movieapp.ui.viewmodel.FilmDetailViewModel
+import com.fatihbilgin.movieapp.ui.viewmodel.OrderViewModel
+import com.google.gson.Gson
 import com.skydoves.landscapist.glide.GlideImage
+import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 
 @Composable
 fun CartScreen(
     navController: NavController,
     userName: String,
-    cardScreenViewModel: CardScreenViewModel,
+    cartScreenViewModel: CartScreenViewModel,
     filmDetailViewModel: FilmDetailViewModel,
     discount: Int,
-    selectedCampaignId: Int?
+    selectedCampaignId: Int?,
+    orderViewModel: OrderViewModel
 ) {
     // Sepet filmlerini gözlemle
-    val cartFilms = cardScreenViewModel.cartFilms.observeAsState(listOf())
+    val cartFilms = cartScreenViewModel.cartFilms.observeAsState(listOf())
 
     // Tüm filmlerin toplam fiyatını hesaplayın
     val totalPrice = cartFilms.value.sumOf { it.price * it.orderAmount }
@@ -105,7 +113,7 @@ fun CartScreen(
 
     // ViewModel'den sepet filmlerini al
     LaunchedEffect(Unit) {
-        cardScreenViewModel.fetchAndMergeCartItems(userName)
+        cartScreenViewModel.fetchAndMergeCartItems(userName)
     }
 
     BackHandler {
@@ -117,7 +125,19 @@ fun CartScreen(
         topBar = {
             CommonTopAppBar(
                 title = "Sepetim",
-                navController = navController
+                navController = navController,
+                actions = {
+                    TextButton(
+                        onClick = {
+                            navController.navigate("orders")
+                        },
+                        modifier = Modifier
+                            .background(Red, shape = RoundedCornerShape(12.dp))
+                            .clip(RoundedCornerShape(12.dp))
+                    ) {
+                        Text(text = "Siparişler", color = Color.White)
+                    }
+                }
             )
         }
     ) { paddingValues ->
@@ -152,9 +172,9 @@ fun CartScreen(
                         CartItem(
                             film = film,
                             orderAmount = film.orderAmount,
-                            onDecrement = { cartId -> cardScreenViewModel.deleteMovieByDecrement(cartId, userName) },
+                            onDecrement = { cartId -> cartScreenViewModel.deleteMovieByDecrement(cartId, userName) },
                             filmDetailViewModel = filmDetailViewModel,
-                            cardScreenViewModel = cardScreenViewModel
+                            cartScreenViewModel = cartScreenViewModel
                         )
                     }
                 }
@@ -163,22 +183,22 @@ fun CartScreen(
                 animatedTotalPrice = animatedTotalPrice,
                 navController = navController,
                 discount = discount,
-                selectedCampaignId = selectedCampaignId
+                selectedCampaignId = selectedCampaignId,
+                cartFilms = cartFilms,
+                orderViewModel = orderViewModel
             )
         }
     }
 }
 
 @Composable
-fun BottomOrderButton(animatedTotalPrice: Int, navController: NavController, discount: Int, selectedCampaignId: Int?) {
+fun BottomOrderButton(animatedTotalPrice: Int, navController: NavController, discount: Int, selectedCampaignId: Int?, cartFilms: State<List<MovieCartData>>, orderViewModel: OrderViewModel) {
     //Kampanya hesaplama
     val animatedTotalDiscountPrice: Double =
         animatedTotalPrice.toDouble() - ((animatedTotalPrice.toDouble() * discount.toDouble()) / 100.0)
 
     val formatter = DecimalFormat("#,##0.00")
     val formattedPrice = formatter.format(animatedTotalDiscountPrice).replace(".", ",") // Noktayı virgüle çevir
-
-
 
     //Lottie Animasyon
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.giftlottie))
@@ -202,7 +222,7 @@ fun BottomOrderButton(animatedTotalPrice: Int, navController: NavController, dis
             )
         )
     }
-
+    val coroutineScope = rememberCoroutineScope()
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -215,7 +235,20 @@ fun BottomOrderButton(animatedTotalPrice: Int, navController: NavController, dis
                 .fillMaxHeight(0.1f) // Sabit yükseklik
                 .padding(bottom = 18.dp)
                 .background(Red, shape = RoundedCornerShape(8.dp))
-                .clickable(enabled = true) { /* Ödeme Tamamla Aksiyonu */ }
+                .clickable(enabled = true) {
+                    val order = OrderData(
+                        userName = "fatih_bilgin_test2",
+                        orderDate = System.currentTimeMillis(),
+                        totalPrice = animatedTotalPrice.toDouble(),
+                        discount = discount,
+                        finalPrice = animatedTotalDiscountPrice,
+                        cartItems = Gson().toJson(cartFilms.value)
+                    )
+                    coroutineScope.launch {
+                        orderViewModel.addOrder(order)
+                        navController.navigate("orders")  // Siparişler ekranına yönlendir
+                    }
+                }
         ) {
             // Sol üst köşeye yuvarlak IconButton ekleniyor
             Box(
@@ -312,14 +345,12 @@ fun BottomOrderButton(animatedTotalPrice: Int, navController: NavController, dis
     }
 }
 
-
-
 @Composable
 fun CartItem(
     film: MovieCartData,
     orderAmount: Int, onDecrement: (Int) -> Unit,
     filmDetailViewModel: FilmDetailViewModel,
-    cardScreenViewModel: CardScreenViewModel
+    cartScreenViewModel: CartScreenViewModel
     ) {
     // Animasyonlu state'ler
     val animatedOrderAmount by animateIntAsState(targetValue = orderAmount)
@@ -358,7 +389,9 @@ fun CartItem(
                     )
 
                     // Geri kalan %60'lık alan
-                    Column(modifier = Modifier.fillMaxSize().background(DarkBlue)) {
+                    Column(modifier = Modifier
+                        .fillMaxSize()
+                        .background(DarkBlue)) {
                         Box(
                             modifier = Modifier
                                 .fillMaxHeight()
@@ -392,7 +425,9 @@ fun CartItem(
                             }
                             AndroidView(
                                 factory = { ratingBar },
-                                modifier = Modifier.align(Alignment.TopEnd).padding(end = 34.dp, top = 4.dp)
+                                modifier = Modifier
+                                    .align(Alignment.TopEnd)
+                                    .padding(end = 34.dp, top = 4.dp)
                             )
                             Text(
                                 text = "${film.rating}",
@@ -442,7 +477,7 @@ fun CartItem(
                                     IconButton(
                                         onClick = {
                                             filmDetailViewModel.insert(film.name, film.image, film.price, film.category, film.rating, film.year, film.director, film.description, 1, "fatih_bilgin_test2")
-                                            cardScreenViewModel.fetchAndMergeCartItems(userName = "fatih_bilgin_test2")
+                                            cartScreenViewModel.fetchAndMergeCartItems(userName = "fatih_bilgin_test2")
                                         },
                                         modifier = Modifier
                                             .background(Red, shape = RoundedCornerShape(8.dp))
@@ -463,5 +498,3 @@ fun CartItem(
         }
     }
 }
-
-

@@ -1,7 +1,6 @@
 package com.fatihbilgin.movieapp.ui.viewmodel
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CardScreenViewModel @Inject constructor(private val filmsRepository: FilmsRepository) : ViewModel() {
+class CartScreenViewModel @Inject constructor(private val filmsRepository: FilmsRepository) : ViewModel() {
     var _cartFilms = MutableLiveData<List<MovieCartData>>()
     val cartFilms: LiveData<List<MovieCartData>> = _cartFilms
 
@@ -71,26 +70,6 @@ class CardScreenViewModel @Inject constructor(private val filmsRepository: Films
 
         }
     }
-
-    fun deleteAllMoviesByName(cartId: Int, userName: String) {
-        CoroutineScope(Dispatchers.Main).launch {
-            val currentCartItems = _cartFilms.value ?: return@launch
-
-            // Silinecek filmleri bul
-            val moviesToDelete = currentCartItems.filter { it.cartId == cartId }
-
-            if (moviesToDelete.isNotEmpty()) {
-                // Her bir girdiyi API üzerinden sil
-                moviesToDelete.forEach { filmsRepository.deleteMovie(it.cartId, userName) }
-
-                // Yerel listeyi güncelle
-                val updatedCartItems = currentCartItems.filterNot { it.cartId == cartId }
-                _cartFilms.value = updatedCartItems
-                _totalOrderAmount.value = updatedCartItems.sumOf { it.orderAmount }
-            }
-        }
-    }
-
 
 }
 

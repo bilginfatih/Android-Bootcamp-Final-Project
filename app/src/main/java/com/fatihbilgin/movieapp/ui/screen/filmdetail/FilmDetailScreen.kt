@@ -25,7 +25,7 @@ import com.fatihbilgin.movieapp.extensions.imageUrl
 import com.fatihbilgin.movieapp.ui.components.BottomActionBar
 import com.fatihbilgin.movieapp.ui.components.CommonTopAppBar
 import com.fatihbilgin.movieapp.ui.theme.BackGroundColor
-import com.fatihbilgin.movieapp.ui.viewmodel.CardScreenViewModel
+import com.fatihbilgin.movieapp.ui.viewmodel.CartScreenViewModel
 import com.fatihbilgin.movieapp.ui.viewmodel.FilmDetailViewModel
 import com.skydoves.landscapist.glide.GlideImage
 import com.fatihbilgin.movieapp.ui.utils.navigateToHomePage
@@ -35,7 +35,7 @@ fun FilmDetailScreen(
     film: FilmsData?,
     filmDetailViewModel: FilmDetailViewModel,
     navController: NavController,
-    cardScreenViewModel: CardScreenViewModel
+    cartScreenViewModel: CartScreenViewModel
 ) {
     if (film != null) {
         val cartItemCount = filmDetailViewModel._cartItemCount.observeAsState(0)
@@ -52,7 +52,8 @@ fun FilmDetailScreen(
                     navController = navController,
                     onBackClick = { navigateToHomePage(navController, cartItemCount.value) },
                     backgroundColor = Color.Transparent,
-                    isTitleCentered = false
+                    isTitleCentered = false,
+
                 )
             }
         ) { paddingValues ->
@@ -92,7 +93,7 @@ fun FilmDetailScreen(
                 BottomActionBar(
                     cartItemCount = cartItemCount.value,
                     navController = navController,
-                    cardScreenViewModel = cardScreenViewModel
+                    cartScreenViewModel = cartScreenViewModel
                 )
             }
         }
